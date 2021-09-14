@@ -12,14 +12,14 @@ namespace BL
   class Block
   {
     public:
-      string hash;
-      string parent_hash;
+      long hash;
+      long parent_hash;
       int height;
       int coinbaseBeneficiary;
       int nonce;
       UTXO utxoPool;
       Transaction transactions;
 
-      void create();
+      Block append_block(Block last_block);
   };
 }
