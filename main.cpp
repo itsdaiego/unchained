@@ -1,11 +1,16 @@
 #include "blockchain.h"
 
-using namespace B;
+
+using namespace BC;
+using namespace BL;
 
 int main()
 {
-    blockchain bc;
-    bc.do_something();
+    Blockchain bc;
+
+    std::vector<Block> blocks;
+
+    bc.create(blocks);
 
     return 0;
 }

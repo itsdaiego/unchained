@@ -1,10 +1,10 @@
 #include "blockchain.h"
 #include <iostream>
 
-using namespace B;
+using namespace BC;
 using namespace std;
 
-void blockchain::do_something()
+void Blockchain::create(vector<Block> blocks)
 {
   cout << "Hello Worldd" << endl;
 }
