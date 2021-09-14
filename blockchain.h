@@ -14,7 +14,7 @@ namespace BC
      vector<Block> blocks;
 
      public:
-       void create(vector<Block> blocks);
+       Block create_root_block(vector<Block> blocks);
        int get_longest_chain_size();
    };
 }

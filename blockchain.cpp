@@ -4,7 +4,14 @@
 using namespace BC;
 using namespace std;
 
-void Blockchain::create(vector<Block> blocks)
+Block Blockchain::create_root_block(vector<Block> blocks)
 {
-  cout << "Hello Worldd" << endl;
+  Block root_block;
+
+  root_block.hash = "123";
+
+  cout << "Blockchain root block" << endl;
+  cout << root_block.hash << endl;
+  
+  return root_block;
 }

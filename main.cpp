@@ -10,7 +10,7 @@ int main()
 
     std::vector<Block> blocks;
 
-    bc.create(blocks);
+    Block root = bc.create_root_block(blocks);
 
     return 0;
 }
