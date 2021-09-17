@@ -24,7 +24,7 @@ Block Blockchain::create_root_block()
   std::hash<string> hash;
   
   string nonce = to_string(rand());
-  long long_hash = hash(nonce);
+  unsigned long long_hash = hash(nonce);
 
   Block root_block;
 
@@ -39,7 +39,7 @@ Block Blockchain::create_root_block()
 
 void Blockchain::list_blocks(vector<Block> &blocks)
 {
-  std::cout << " blocks:" << std::endl;
+  std::cout << "Created blocks:" << std::endl;
   for (int i = 0; i < blocks.size(); ++i) {
     cout << "------------" << endl;
     cout << "------------" << endl;

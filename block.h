@@ -2,6 +2,7 @@
 #include <iostream>
 #include "transaction.h"
 #include "utxo.h"
+#include <vector>
 
 using namespace std;
 using namespace UT;
@@ -12,14 +13,17 @@ namespace BL
   class Block
   {
     public:
-      long hash;
-      long parent_hash;
+      unsigned long hash;
+      unsigned long parent_hash;
       int height;
       int coinbaseBeneficiary;
       int nonce;
       UTXO utxoPool;
       Transaction transactions;
 
-      Block append_block(Block last_block);
+      void append_block(vector<Block> &last_block);
+
+      private:
+        long mine_block(long parent_hash);
   };
 }
