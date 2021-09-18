@@ -30,7 +30,6 @@ Block Blockchain::create_root_block()
 
   root_block.hash = long_hash;
   root_block.parent_hash = 0L;
-  root_block.coinbaseBeneficiary = 0;
   root_block.height = 0;
 
   return root_block;

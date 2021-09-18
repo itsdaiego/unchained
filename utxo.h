@@ -1,6 +1,6 @@
 #include <string>
 #include <iostream>
-
+#include <map>
 
 using namespace std;
 
@@ -10,8 +10,11 @@ namespace UT
   {
     public:
       string public_key;
-      int amount;
+      double balance;
+      double amount; 
+      map<string, double> utxopool;
 
-      void add_transaction_to_pool(string input_public_key, string output_public_key, int amount);
+
+      static void add_reward_to_pool(string input_public_key, double amount);
   };
 }

@@ -5,22 +5,26 @@
 
 using namespace BL;
 using namespace std;
+using namespace UT;
 
-void Block::append_block(vector<Block> &blocks)
+void Block::append_block(vector<Block> &blocks, Issuer issuer)
 {
 
   Block last_block = blocks.back();
-  long long_hash = mine_block(last_block.hash);
+  long long_hash = mine_block(last_block.hash + last_block.parent_hash);
 
   Block bl;
-
 
   bl.hash = long_hash;
   bl.parent_hash = last_block.hash;
   bl.height = last_block.height + 1;
-  bl.coinbaseBeneficiary = 0;
+  bl.coinbaseBeneficiary = issuer.pub_key;
 
   blocks.push_back(bl);
+
+  // TODO: create a separate function for this instruction
+  auto curr_utxpool = utxo.utxopool.find(issuer.pub_key);
+  curr_utxpool->second = curr_utxpool->second + 20.5;
 }
 
 long Block::mine_block(long parent_hash)
@@ -35,8 +39,9 @@ long Block::mine_block(long parent_hash)
     unsigned long rand_n = rand() + MAX_LONG;
     string nonce = to_string(rand_n);
     long_hash = hash(nonce);
-    /* std::cout << "Mining: " << long_hash << std::endl; */
+    cout << "Mining: " << long_hash << endl;
   }
 
+  cout <<  "Mining completed"  << endl;
   return long_hash;
 }

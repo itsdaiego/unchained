@@ -8,6 +8,11 @@ using namespace std;
 using namespace UT;
 using namespace TRX;
 
+struct Issuer {
+  string pub_key;
+  string pvt_key; 
+};
+
 namespace BL
 {
   class Block
@@ -16,14 +21,12 @@ namespace BL
       unsigned long hash;
       unsigned long parent_hash;
       int height;
-      int coinbaseBeneficiary;
+      string coinbaseBeneficiary;
       int nonce;
-      UTXO utxoPool;
+      UTXO utxo;
       Transaction transactions;
 
-      void append_block(vector<Block> &last_block);
-
-      private:
-        long mine_block(long parent_hash);
+      void append_block(vector<Block> &last_block, Issuer issuer);
+      long mine_block(long parent_hash);
   };
 }
