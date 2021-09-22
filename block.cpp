@@ -11,7 +11,9 @@ void Block::append_block(vector<Block> &blocks, Issuer issuer)
 {
 
   Block last_block = blocks.back();
-  long long_hash = mine_block(last_block.hash + last_block.parent_hash);
+
+  string hash_input = to_string(last_block.parent_hash) + issuer.pub_key;
+  long long_hash = mine_block(hash_input);
 
   Block bl;
 
@@ -27,7 +29,7 @@ void Block::append_block(vector<Block> &blocks, Issuer issuer)
   curr_utxpool->second = curr_utxpool->second + 20.5;
 }
 
-long Block::mine_block(long parent_hash)
+long Block::mine_block(string hash_input)
 {
   std::hash<string> hash;
 
@@ -38,7 +40,7 @@ long Block::mine_block(long parent_hash)
     unsigned long MAX_LONG = -1;
     unsigned long rand_n = rand() + MAX_LONG;
     string nonce = to_string(rand_n);
-    long_hash = hash(nonce);
+    long_hash = hash(nonce + hash_input);
     cout << "Mining: " << long_hash << endl;
   }
 

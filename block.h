@@ -27,6 +27,6 @@ namespace BL
       Transaction transactions;
 
       void append_block(vector<Block> &last_block, Issuer issuer);
-      long mine_block(long parent_hash);
+      long mine_block(string hash_input);
   };
 }
