@@ -4,7 +4,11 @@
 using namespace TRX;
 using namespace std;
 
-void Transaction::perform_transaction(string input_public_key, string output_public_key, int amount)
+long Transaction::calculate_hash(string input_public_key, string output_public_key, double amount)
 {
-  cout << "Hello Transaction" << endl;
+  string hash_input = input_public_key + output_public_key + to_string(amount);
+
+  std::hash<string> hash;
+
+  return hash(hash_input);
 }

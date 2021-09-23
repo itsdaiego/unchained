@@ -24,9 +24,9 @@ namespace BL
       string coinbaseBeneficiary;
       int nonce;
       UTXO utxo;
-      Transaction transactions;
+      vector<Transaction> transactions;
 
-      void append_block(vector<Block> &last_block, Issuer issuer);
+      void append_block(vector<Block> &last_block, string pub_key, vector<Transaction> transactions);
       long mine_block(string hash_input);
   };
 }

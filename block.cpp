@@ -7,12 +7,18 @@ using namespace BL;
 using namespace std;
 using namespace UT;
 
-void Block::append_block(vector<Block> &blocks, Issuer issuer)
+void Block::append_block(vector<Block> &blocks, string pub_key, vector<Transaction> transactions)
 {
+
+  // verify transaction contents
+
+  // increase UTXOPool for a given pub_key
+
+  // bind transaction to block (perform hashing)
 
   Block last_block = blocks.back();
 
-  string hash_input = to_string(last_block.parent_hash) + issuer.pub_key;
+  string hash_input = to_string(last_block.parent_hash) + pub_key;
   long long_hash = mine_block(hash_input);
 
   Block bl;
@@ -20,13 +26,14 @@ void Block::append_block(vector<Block> &blocks, Issuer issuer)
   bl.hash = long_hash;
   bl.parent_hash = last_block.hash;
   bl.height = last_block.height + 1;
-  bl.coinbaseBeneficiary = issuer.pub_key;
+  bl.coinbaseBeneficiary = pub_key;
+  bl.transactions = transactions;
 
   blocks.push_back(bl);
 
   // TODO: create a separate function for this instruction
-  auto curr_utxpool = utxo.utxopool.find(issuer.pub_key);
-  curr_utxpool->second = curr_utxpool->second + 20.5;
+  auto curr_utxopool = utxo.utxopool.find(pub_key);
+  curr_utxopool->second = curr_utxopool->second + 20.5;
 }
 
 long Block::mine_block(string hash_input)

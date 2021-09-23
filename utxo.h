@@ -15,6 +15,6 @@ namespace UT
       map<string, double> utxopool;
 
 
-      static void add_reward_to_pool(string input_public_key, double amount);
+      static void verify_transaction(string input_public_key, double amount);
   };
 }

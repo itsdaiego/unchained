@@ -10,10 +10,10 @@ namespace TRX
     public:
       string input_public_key;
       string output_public_key;
-      int amount;
-      int fee;
+      double amount;
+      double fee;
       int signature;
 
-      void perform_transaction(string input_public_key, string output_public_key, int amount);
+      long calculate_hash(string input_public_key, string output_public_key, double amount);
   };
 }

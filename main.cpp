@@ -1,6 +1,7 @@
 #include "blockchain.h"
 #include <time.h>
 #include <string>
+#include <map>
 
 
 using namespace BC;
@@ -83,11 +84,25 @@ int main()
     { issuerB.pub_key, 0 }
   };
 
-  bl.append_block(bc.blocks, issuerA);
+  vector<Transaction> transactions;
 
-  bl.append_block(bc.blocks, issuerA);
+  Transaction transaction;
 
-  bl.append_block(bc.blocks, issuerB);
+  bl.append_block(bc.blocks, issuerA.pub_key, transactions);
+
+  Transaction transaction1;
+  
+  transaction.input_public_key = issuerA.pub_key;
+  transaction.output_public_key = issuerB.pub_key;
+  transaction.amount = 12.5;
+
+  transactions.push_back(transaction);
+
+  bl.append_block(bc.blocks, issuerA.pub_key, transactions);
+
+  transactions.pop_back();
+
+  bl.append_block(bc.blocks, issuerB.pub_key, transactions);
 
   bc.list_blocks(bc.blocks);
 
