@@ -86,23 +86,20 @@ int main()
 
   vector<Transaction> transactions;
 
-  Transaction transaction;
-
-  bl.append_block(bc.blocks, issuerA.pub_key, transactions);
-
   Transaction transaction1;
   
-  transaction.input_public_key = issuerA.pub_key;
-  transaction.output_public_key = issuerB.pub_key;
-  transaction.amount = 12.5;
 
-  transactions.push_back(transaction);
+  bl.append_block(bc.blocks, issuerA.pub_key);
+
+  transaction1.input_public_key = issuerA.pub_key;
+  transaction1.output_public_key = issuerB.pub_key;
+  transaction1.amount = 12.5;
+
+  transactions.push_back(transaction1);
 
   bl.append_block(bc.blocks, issuerA.pub_key, transactions);
 
-  transactions.pop_back();
-
-  bl.append_block(bc.blocks, issuerB.pub_key, transactions);
+  bl.append_block(bc.blocks, issuerB.pub_key);
 
   bc.list_blocks(bc.blocks);
 

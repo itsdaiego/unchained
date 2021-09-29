@@ -1,9 +1,11 @@
+#include "transaction.h"
 #include <string>
 #include <iostream>
 #include <map>
+#include <vector>
 
 using namespace std;
-
+using namespace TRX;
 namespace UT
 {
   class UTXO
@@ -15,6 +17,6 @@ namespace UT
       map<string, double> utxopool;
 
 
-      static void verify_transaction(string input_public_key, double amount);
+      static void verify_transaction(double issuer_balance, double amount);
   };
 }

@@ -6,12 +6,10 @@
 using namespace UT;
 using namespace std;
 
-void UTXO::verify_transaction(string pub_key, double amount)
+void UTXO::verify_transaction(double issuer_balance, double amount)
 {
-  UTXO utxo;
-
-  auto issuer_pool = utxo.utxopool.find(pub_key);
-  long issuer_balance = issuer_pool->second;
+  std::cout << "pool: " << issuer_balance << std::endl;
+  std::cout << "amount: " << amount << std::endl;
 
   if (issuer_balance < amount)
   {
@@ -19,9 +17,4 @@ void UTXO::verify_transaction(string pub_key, double amount)
   }
 
   issuer_balance -= amount;
-
-  if (issuer_balance == 0)
-  {
-    utxo.utxopool.erase(pub_key);
-  }
 }
