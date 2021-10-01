@@ -19,10 +19,9 @@ void Block::append_block(vector<Block> &blocks, string pub_key, vector<Transacti
   for (Transaction trx : transactions)
   {
     transaction_hash += to_string(transaction.calculate_hash(trx.input_public_key, trx.output_public_key, trx.amount));
-    total_amount += trx.amount;
 
     double issuer_balance = utxo.utxopool.find(pub_key)->second;
-    utxo.verify_transaction(issuer_balance, total_amount);
+    utxo.verify_transaction(issuer_balance, trx.amount);
 
     // update issuer and receiver balances
     auto issuer = utxo.utxopool.find(trx.input_public_key);
