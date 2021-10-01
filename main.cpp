@@ -93,7 +93,7 @@ int main()
   Transaction transaction1;
   transaction1.input_public_key = issuerA.pub_key;
   transaction1.output_public_key = issuerB.pub_key;
-  transaction1.amount = 10;
+  transaction1.amount = 15;
 
   Transaction transaction2;
   transaction2.input_public_key = issuerA.pub_key;

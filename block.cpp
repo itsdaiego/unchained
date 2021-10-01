@@ -10,28 +10,10 @@ using namespace UT;
 void Block::append_block(vector<Block> &blocks, string pub_key, vector<Transaction> transactions)
 {
   Block last_block = blocks.back();
-  Transaction transaction;
-
-  string transaction_hash = "";
-  long total_amount = 0;
 
 
-  for (Transaction trx : transactions)
-  {
-    transaction_hash += to_string(transaction.calculate_hash(trx.input_public_key, trx.output_public_key, trx.amount));
-
-    double issuer_balance = utxo.utxopool.find(pub_key)->second;
-    utxo.verify_transaction(issuer_balance, trx.amount);
-
-    // update issuer and receiver balances
-    auto issuer = utxo.utxopool.find(trx.input_public_key);
-    issuer->second = issuer->second - trx.amount;
-
-    auto receiver = utxo.utxopool.find(trx.output_public_key);
-    receiver->second = receiver->second + trx.amount;
-  }
-
-  string hash_input = to_string(last_block.parent_hash) + pub_key + transaction_hash;
+  string transactions_combined_hash = utxo.compute_transactions(transactions, utxo, pub_key);
+  string hash_input = to_string(last_block.parent_hash) + pub_key + transactions_combined_hash;
 
   long long_hash = mine_block(hash_input);
 
@@ -44,7 +26,6 @@ void Block::append_block(vector<Block> &blocks, string pub_key, vector<Transacti
   bl.transactions = transactions;
 
   blocks.push_back(bl);
-
 
   auto curr_utxopool = utxo.utxopool.find(pub_key);
   curr_utxopool->second = curr_utxopool->second + 20.5;

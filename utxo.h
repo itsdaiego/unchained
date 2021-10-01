@@ -18,5 +18,6 @@ namespace UT
 
 
       static void verify_transaction(double issuer_balance, double amount);
+      string compute_transactions(vector<Transaction> transaction, UTXO &utxo, string pub_key);
   };
 }
