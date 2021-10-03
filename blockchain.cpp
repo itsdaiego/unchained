@@ -46,5 +46,11 @@ void Blockchain::list_blocks(vector<Block> &blocks)
     cout << "Parent Hash: " << blocks[i].parent_hash << endl;
     cout << "Reward: " << blocks[i].coinbaseBeneficiary << endl;
     cout << "Height: " << blocks[i].height << endl;
+    for (Transaction trx : blocks[i].transactions) {
+      std::cout << "........................" << std::endl; 
+      std::cout << "Transactions sender key: " << trx.input_public_key << std::endl; 
+      std::cout << "Transactions receiver key: " << trx.output_public_key << std::endl; 
+      std::cout << "Transactions amount: " << trx.amount << std::endl; 
+    }
   }
 }

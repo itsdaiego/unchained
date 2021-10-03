@@ -27,8 +27,7 @@ void Block::append_block(vector<Block> &blocks, string pub_key, vector<Transacti
 
   blocks.push_back(bl);
 
-  auto curr_utxopool = utxo.utxopool.find(pub_key);
-  curr_utxopool->second = curr_utxopool->second + 20.5;
+  utxo.set_issuer_reward(utxo, pub_key);
 }
 
 long Block::mine_block(string hash_input)

@@ -6,6 +6,10 @@
 using namespace UT;
 using namespace std;
 
+
+const int FEE = 2;
+const int REWARD = 20;
+
 void UTXO::verify_transaction(double issuer_balance, double amount)
 {
   std::cout << "pool: " << issuer_balance << std::endl;
@@ -41,3 +45,8 @@ string UTXO::compute_transactions(vector<Transaction> transactions, UTXO &utxo, 
   return transactions_combined_hash;
 }
 
+void UTXO::set_issuer_reward(UTXO &utxo, string pub_key)
+{
+  auto curr_utxopool = utxo.utxopool.find(pub_key);
+  curr_utxopool->second = curr_utxopool->second + REWARD;
+}
