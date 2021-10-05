@@ -23,7 +23,7 @@ void UTXO::verify_transaction(double issuer_balance, double amount)
   issuer_balance -= amount;
 }
 
-string UTXO::compute_transactions(vector<Transaction> transactions, UTXO &utxo, string pub_key)
+string UTXO::compute_transactions(vector<Transaction> transactions, UTXO &utxo, string id)
 {
   string transactions_combined_hash = "";
 
@@ -33,7 +33,7 @@ string UTXO::compute_transactions(vector<Transaction> transactions, UTXO &utxo, 
 
     transactions_combined_hash += to_string(transaction.calculate_hash(trx.input_public_key, trx.output_public_key, trx.amount));
 
-    double issuer_balance = utxo.utxopool.find(pub_key)->second;
+    double issuer_balance = utxo.utxopool.find(id)->second;
     utxo.verify_transaction(issuer_balance, trx.amount);
 
     auto issuer = utxo.utxopool.find(trx.input_public_key);
@@ -45,8 +45,8 @@ string UTXO::compute_transactions(vector<Transaction> transactions, UTXO &utxo, 
   return transactions_combined_hash;
 }
 
-void UTXO::set_issuer_reward(UTXO &utxo, string pub_key)
+void UTXO::set_issuer_reward(UTXO &utxo, string id)
 {
-  auto curr_utxopool = utxo.utxopool.find(pub_key);
+  auto curr_utxopool = utxo.utxopool.find(id);
   curr_utxopool->second = curr_utxopool->second + REWARD;
 }

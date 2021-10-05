@@ -6,11 +6,6 @@
 using namespace std;
 using namespace UT;
 
-struct Issuer {
-  string pub_key;
-  string pvt_key; 
-};
-
 namespace BL
 {
   class Block
@@ -24,7 +19,7 @@ namespace BL
       UTXO utxo;
       vector<Transaction> transactions;
 
-      void append_block(vector<Block> &last_block, string pub_key, const vector<Transaction> transactions = vector<Transaction>());
+      void append_block(vector<Block> &last_block, string id, const vector<Transaction> transactions = vector<Transaction>());
       long mine_block(string hash_input);
   };
 }

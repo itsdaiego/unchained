@@ -22,7 +22,7 @@ Blockchain Blockchain::create_blockchain()
 Block Blockchain::create_root_block()
 {
   std::hash<string> hash;
-  
+
   string nonce = to_string(rand());
   unsigned long long_hash = hash(nonce);
 
@@ -48,9 +48,9 @@ void Blockchain::list_blocks(vector<Block> &blocks)
     cout << "Height: " << blocks[i].height << endl;
     for (Transaction trx : blocks[i].transactions) {
       std::cout << "........................" << std::endl; 
-      std::cout << "Transactions sender key: " << trx.input_public_key << std::endl; 
-      std::cout << "Transactions receiver key: " << trx.output_public_key << std::endl; 
-      std::cout << "Transactions amount: " << trx.amount << std::endl; 
+      std::cout << "Transaction sender key: " << trx.input_public_key << std::endl; 
+      std::cout << "Transaction receiver key: " << trx.output_public_key << std::endl; 
+      std::cout << "Transaction amount: " << trx.amount << std::endl; 
     }
   }
 }
