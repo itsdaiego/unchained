@@ -78,9 +78,5 @@ int main()
 
   std::cout << "IssuerB balance: " << bl.utxo.utxopool.find(issuerB.key)->second << std::endl;
 
-  std::hash<string> hash;
-  long result = hash("1234");
-
-  std::cout << result << std::endl;
   return 0;
 }

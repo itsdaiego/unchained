@@ -21,15 +21,10 @@ Blockchain Blockchain::create_blockchain()
 
 Block Blockchain::create_root_block()
 {
-  std::hash<string> hash;
-
-  string nonce = to_string(rand());
-  unsigned long long_hash = hash(nonce);
-
   Block root_block;
 
-  root_block.hash = long_hash;
-  root_block.parent_hash = 0L;
+  root_block.hash = "000";
+  root_block.parent_hash = "000";
   root_block.height = 0;
 
   return root_block;
@@ -44,7 +39,7 @@ void Blockchain::list_blocks(vector<Block> &blocks)
     cout << "------------" << endl;
     cout << "Hash: " << blocks[i].hash << endl;
     cout << "Parent Hash: " << blocks[i].parent_hash << endl;
-    cout << "Reward: " << blocks[i].coinbaseBeneficiary << endl;
+    cout << "Coinbase Beneficiary: " << blocks[i].coinbaseBeneficiary << endl;
     cout << "Height: " << blocks[i].height << endl;
     for (Transaction trx : blocks[i].transactions) {
       std::cout << "........................" << std::endl; 

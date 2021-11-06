@@ -2,6 +2,7 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include "include/easy-encrypt/encrypt.h"
 
 using namespace BL;
 using namespace std;
@@ -13,13 +14,14 @@ void Block::append_block(vector<Block> &blocks, string key, vector<Transaction> 
 
 
   string transactions_combined_hash = utxo.compute_transactions(transactions, utxo, key);
-  string hash_input = to_string(last_block.parent_hash) + key + transactions_combined_hash;
+  string hash_input = last_block.parent_hash + key + transactions_combined_hash;
 
-  long long_hash = mine_block(hash_input);
+  string mined_block = to_string(mine_block(hash_input));
+  string encrypted_hash = encrypt(mined_block, key);
 
   Block bl;
 
-  bl.hash = long_hash;
+  bl.hash = encrypted_hash;
   bl.parent_hash = last_block.hash;
   bl.height = last_block.height + 1;
   bl.coinbaseBeneficiary = key;

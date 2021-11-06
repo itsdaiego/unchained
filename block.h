@@ -11,8 +11,8 @@ namespace BL
   class Block
   {
     public:
-      unsigned long hash;
-      unsigned long parent_hash;
+      string hash;
+      string parent_hash;
       int height;
       string coinbaseBeneficiary;
       int nonce;
