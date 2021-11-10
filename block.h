@@ -19,7 +19,7 @@ namespace BL
       UTXO utxo;
       vector<Transaction> transactions;
 
-      void append_block(vector<Block> &last_block, string id, const vector<Transaction> transactions = vector<Transaction>());
+      void append_block(int &shm_id, string &id, const vector<Transaction> &transactions = vector<Transaction>());
       long mine_block(string hash_input);
   };
 }

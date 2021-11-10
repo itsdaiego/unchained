@@ -2,6 +2,8 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include <sys/shm.h>
+#include <sys/ipc.h>
 
 using namespace BC;
 using namespace std;
@@ -31,17 +33,19 @@ Block Blockchain::create_root_block()
 }
 
 
-void Blockchain::list_blocks(vector<Block> &blocks)
+void Blockchain::list_blocks(int shm_id)
 {
+  vector<Block> *blocks = (vector<class Block>*) shmat(shm_id, NULL, 0);
+
   std::cout << "Created blocks:" << std::endl;
-  for (int i = 0; i < blocks.size(); ++i) {
+  for (int i = 0; i < blocks->size(); ++i) {
     cout << "------------" << endl;
     cout << "------------" << endl;
-    cout << "Hash: " << blocks[i].hash << endl;
-    cout << "Parent Hash: " << blocks[i].parent_hash << endl;
-    cout << "Coinbase Beneficiary: " << blocks[i].coinbaseBeneficiary << endl;
-    cout << "Height: " << blocks[i].height << endl;
-    for (Transaction trx : blocks[i].transactions) {
+    cout << "Hash: " << blocks->at(i).hash << endl;
+    cout << "Parent Hash: " << blocks->at(i).parent_hash << endl;
+    cout << "Coinbase Beneficiary: " << blocks->at(i).coinbaseBeneficiary << endl;
+    cout << "Height: " << blocks->at(i).height << endl;
+    for (Transaction trx : blocks->at(i).transactions) {
       std::cout << "........................" << std::endl; 
       std::cout << "Transaction sender key: " << trx.input_public_key << std::endl; 
       std::cout << "Transaction receiver key: " << trx.output_public_key << std::endl; 

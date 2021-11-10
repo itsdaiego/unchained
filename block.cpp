@@ -3,18 +3,27 @@
 #include <functional>
 #include <string>
 #include "include/easy-encrypt/encrypt.h"
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 using namespace BL;
 using namespace std;
 using namespace UT;
 
-void Block::append_block(vector<Block> &blocks, string key, vector<Transaction> transactions)
+void Block::append_block(int &shm_id, string &key, const vector<Transaction> &transactions)
 {
-  Block last_block = blocks.back();
+  // access shared memory in order to access latest block in chain
+  // ofc might cause some concurrency problems #eita
+  vector<Block> *blocks = (vector<class Block>*) shmat(shm_id, NULL, 0);
 
+  Block *last_block = &blocks->back();
 
-  string transactions_combined_hash = utxo.compute_transactions(transactions, utxo, key);
-  string hash_input = last_block.parent_hash + key + transactions_combined_hash;
+  std::cout << "shared" << std::endl;
+  string  transactions_combined_hash = "";
+  transactions_combined_hash = utxo.compute_transactions(transactions, utxo, key);
+  std::cout << "shared1" << std::endl;
+
+  string hash_input = last_block->parent_hash + key + transactions_combined_hash;
 
   string mined_block = to_string(mine_block(hash_input));
   string encrypted_hash = encrypt(mined_block, key);
@@ -22,12 +31,12 @@ void Block::append_block(vector<Block> &blocks, string key, vector<Transaction> 
   Block bl;
 
   bl.hash = encrypted_hash;
-  bl.parent_hash = last_block.hash;
-  bl.height = last_block.height + 1;
+  bl.parent_hash = last_block->hash;
+  bl.height = last_block->height + 1;
   bl.coinbaseBeneficiary = key;
   bl.transactions = transactions;
 
-  blocks.push_back(bl);
+  blocks->push_back(bl);
 
   utxo.set_issuer_reward(utxo, key);
 }

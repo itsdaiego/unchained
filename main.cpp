@@ -3,6 +3,10 @@
 #include <string>
 #include <map>
 #include <stdexcept>
+#include <thread>
+#include <mutex>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 
 using namespace BC;
@@ -16,6 +20,13 @@ struct Issuer {
 
 int main()
 {
+  // current approach is to create multiple processes instead of using threads, in that way we will be able to broadcast transactions and validate them using multiple nodes. Leaving that here just for reference
+  /* std::mutex mtx; */
+  /* mtx.lock(); */
+  /* std::thread th1(&Block::append_block, bl, std::ref(shm_id), std::ref(issuerA.key), std::ref(transactions)); */
+  /* mtx.unlock(); */
+  /* th1.join(); */
+
   if (!getenv("SECRET")) {
     throw invalid_argument("MISSING SECRET: export SECRET=something");
   } // shared secret among identities (not ideal ofc :P)
@@ -44,8 +55,6 @@ int main()
 
   bc.blocks.push_back(root_block);
 
-  Block first_block, second_block, third_block;
-
   bl.utxo.utxopool = {
     { issuerA.key, 0 },
     { issuerB.key, 0 }
@@ -53,7 +62,16 @@ int main()
 
   vector<Transaction> transactions;
 
-  bl.append_block(bc.blocks, issuerA.key);
+  int shm_key = 1234; // value will be shared by multiple processes
+
+  int shm_id = shmget(shm_key, sizeof(class Block) * 100, IPC_CREAT | 0666);
+
+  // insert root_block into shared memory 
+  vector<Block> *blocks = (vector<class Block>*) shmat(shm_id, NULL, 0);
+  blocks->push_back(root_block);
+
+  std::cout << "block 1" << std::endl;
+  bl.append_block(shm_id, issuerA.key);
 
   Transaction transaction1;
   transaction1.input_public_key = issuerA.key;
@@ -68,15 +86,22 @@ int main()
   transactions.push_back(transaction1);
   transactions.push_back(transaction2);
 
-  bl.append_block(bc.blocks, issuerA.key, transactions);
+  std::cout << "block 2" << std::endl;
+  bl.append_block(shm_id, issuerA.key, transactions);
+  std::cout << "block 3" << std::endl;
+  bl.append_block(shm_id, issuerB.key);
 
-  bl.append_block(bc.blocks, issuerB.key);
-
-  bc.list_blocks(bc.blocks);
+  bc.list_blocks(shm_id);
 
   std::cout << "IssuerA balance: " << bl.utxo.utxopool.find(issuerA.key)->second << std::endl;
 
   std::cout << "IssuerB balance: " << bl.utxo.utxopool.find(issuerB.key)->second << std::endl;
 
+  // destroys shared memory 
+  std::cout << "SHARED_MEM_ID: " << shm_id << std::endl;
+  int r_detach = shmdt(blocks);
+  std::cout << "success detaching" << r_detach << std::endl;
+  int r_destroy = shmctl(shm_key, IPC_RMID, NULL);
+  std::cout << "success destroying?" << r_destroy << std::endl;
   return 0;
 }
