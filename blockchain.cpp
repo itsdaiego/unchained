@@ -35,17 +35,18 @@ Block Blockchain::create_root_block()
 
 void Blockchain::list_blocks(int shm_id)
 {
-  vector<Block> *blocks = (vector<class Block>*) shmat(shm_id, NULL, 0);
+  const vector<Block> *blocks = (vector<class Block>*) shmat(shm_id, NULL, 0);
 
   std::cout << "Created blocks:" << std::endl;
-  for (int i = 0; i < blocks->size(); ++i) {
+
+  for(const auto &block : *blocks){
     cout << "------------" << endl;
     cout << "------------" << endl;
-    cout << "Hash: " << blocks->at(i).hash << endl;
-    cout << "Parent Hash: " << blocks->at(i).parent_hash << endl;
-    cout << "Coinbase Beneficiary: " << blocks->at(i).coinbaseBeneficiary << endl;
-    cout << "Height: " << blocks->at(i).height << endl;
-    for (Transaction trx : blocks->at(i).transactions) {
+    cout << "Hash: " << block.hash << endl;
+    cout << "Parent Hash: " << block.parent_hash << endl;
+    cout << "Coinbase Beneficiary: " << block.coinbaseBeneficiary << endl;
+    cout << "Height: " << block.height << endl;
+    for (Transaction trx : block.transactions) {
       std::cout << "........................" << std::endl; 
       std::cout << "Transaction sender key: " << trx.input_public_key << std::endl; 
       std::cout << "Transaction receiver key: " << trx.output_public_key << std::endl; 
