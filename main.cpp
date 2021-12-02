@@ -7,26 +7,25 @@
 #include <mutex>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include "include/rapidjson/document.h"
+#include "include/rapidjson/writer.h"
+#include "include/rapidjson/stringbuffer.h"
 
 
 using namespace BC;
 using namespace BL;
 using namespace UT;
+using namespace rapidjson;
+
 
 struct Issuer {
   string key;
   string secret;
 };
 
-int main()
-{
-  // current approach is to create multiple processes instead of using threads, in that way we will be able to broadcast transactions and validate them using multiple nodes. Leaving that here just for reference
-  /* std::mutex mtx; */
-  /* mtx.lock(); */
-  /* std::thread th1(&Block::append_block, bl, std::ref(shm_id), std::ref(issuerA.key), std::ref(transactions)); */
-  /* mtx.unlock(); */
-  /* th1.join(); */
 
+int main(int argc, char **argv)
+{
   if (!getenv("SECRET")) {
     throw invalid_argument("MISSING SECRET: export SECRET=something");
   } // shared secret among identities (not ideal ofc :P)
@@ -47,6 +46,7 @@ int main()
   Blockchain bc;
   Block bl;
 
+  // set initial chain' s state
   bc.create_blockchain();
 
   Block root_block;
@@ -56,13 +56,14 @@ int main()
   bc.blocks.push_back(root_block);
 
   bl.utxo.utxopool = {
-    { issuerA.key, 0 },
-    { issuerB.key, 0 }
+    { issuerA.key, 20 },
+    { issuerB.key, 20 }
   };
 
   vector<Transaction> transactions;
 
-  int shm_key = 1234; // value will be shared by multiple processes
+  /// create shared memory 
+  int shm_key = 342; // value will be shared by multiple processes
 
   int shm_id = shmget(shm_key, sizeof(class Block) * 100, IPC_CREAT | 0666);
 
@@ -70,26 +71,27 @@ int main()
   vector<Block> *blocks = (vector<class Block>*) shmat(shm_id, NULL, 0);
   blocks->push_back(root_block);
 
-  std::cout << "block 1" << std::endl;
-  bl.append_block(shm_id, issuerA.key);
+  std::cout << "shared memory id: " << shm_id << std::endl;
 
-  Transaction transaction1;
-  transaction1.input_public_key = issuerA.key;
-  transaction1.output_public_key = issuerB.key;
-  transaction1.amount = 5;
+  Document d;
 
-  Transaction transaction2;
-  transaction2.input_public_key = issuerB.key;
-  transaction2.output_public_key = issuerA.key;
-  transaction2.amount = 2;
+  for (std::string line; std::getline(std::cin, line);) {
+    std::cout << "transaction to compute: "<< line << std::endl;
 
-  transactions.push_back(transaction1);
-  transactions.push_back(transaction2);
+    char json[line.length() + 1];
+    strcpy(json, line.c_str());
 
-  std::cout << "block 2" << std::endl;
-  bl.append_block(shm_id, issuerA.key, transactions);
-  std::cout << "block 3" << std::endl;
-  bl.append_block(shm_id, issuerB.key);
+    d.Parse(json);
+
+    Transaction transaction;
+    transaction.input_public_key = d["input_public_key"].GetString();
+    transaction.output_public_key = d["output_public_key"].GetString();
+    transaction.amount = d["amount"].GetInt();
+
+    transactions.push_back(transaction);
+    bl.append_block(shm_id, issuerA.key, transactions);
+  }
+
 
   bc.list_blocks(shm_id);
 
@@ -101,7 +103,9 @@ int main()
   std::cout << "SHARED_MEM_ID: " << shm_id << std::endl;
   int r_detach = shmdt(blocks);
   std::cout << "success detaching" << r_detach << std::endl;
-  int r_destroy = shmctl(shm_key, IPC_RMID, NULL);
+  int r_destroy = shmctl(shm_id, IPC_RMID, 0);
   std::cout << "success destroying?" << r_destroy << std::endl;
+
+
   return 0;
 }

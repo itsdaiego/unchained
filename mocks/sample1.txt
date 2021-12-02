@@ -1,0 +1,2 @@
+{ "input_public_key": "somekeyforissuera", "output_public_key": "anotherkeyforuserb", "amount": 10 }
+{ "input_public_key": "anotherkeyforuserb", "output_public_key": "somekeyforissuera", "amount": 5 }
