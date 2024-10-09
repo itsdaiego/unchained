@@ -2,6 +2,7 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include <random>
 #include "include/easy-encrypt/encrypt.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -47,15 +48,18 @@ long Block::mine_block(string hash_input)
 
   // random simple condition to enforce some sort of computation power 
   // in order to mine blocks
-  while(long_hash % 1000 != 00)
+  while(long_hash % 1000000 != 000000)
   {
-    unsigned long MAX_LONG = -1;
-    unsigned long rand_n = rand() + MAX_LONG;
-    string nonce = to_string(rand_n);
+    std::random_device rd;
+    std::mt19937_64 gen(rd());
+    std::uniform_int_distribution<uint64_t> dis;
 
-    std::hash<string> hash;
+    uint64_t nonce = dis(gen);
+    string nonce_str = to_string(nonce);
 
-    long_hash = hash(nonce + hash_input);
+    std::hash<string> hasher;
+
+    long_hash = hasher(nonce_str + hash_input);
 
     cout << "Mining: " << long_hash << endl;
   }
